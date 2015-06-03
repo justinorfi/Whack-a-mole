@@ -1,9 +1,58 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Kingslayer</title>
+	<link rel="stylesheet" type="text/css" href="/css/kingslayer.css">
+	<script type="text/javascript" src="/js/jquery2.js"></script>
 </head>
 <body>
+<header>
+	<h1 class="header">Kingslayer</h1>
+</header>
+<main>
+	<div id="gameWrapper">
+		<div id="box0" class="game"></div>
+		<div id="box1" class="game"></div>
+		<div id="box2" class="game"></div>
+		<div id="box3" class="game"></div>
+		<div id="box4" class="game"></div>
+		<div id="box5" class="game"></div>
+		<div id="box6" class="game"></div>
+		<div id="box7" class="game"></div>
+		<div id="box8" class="game"></div>
+		<div id="box" class="kill"><img src="/img/joffrey.jpg"/></div>
+		<div id="playGame"></div>
+	</div>
+</main>
+<aside>
+	<div id="scoreWrapper">
+		<div id="scoreLine" class="center">Score:<span id="score">*</span></div>
+		<div id="speed"></div>
+	</div>
+</aside>
+<script>
+var game = {
+	score: 0,
+	speed: 1000,
 
+	init: function(){
+		$('#playGame').hide();
+		game.randomUp();
+		// game.correctClick();
+	},
+
+	randomUp: function(){
+		var correctBox = Math.floor(Math.random() * (9 - 0)) + 0;
+		game.popUp(correctBox)
+	},
+
+	popUp: function(correctBox) {
+		$('.kill').appendTo($('#box' + correctBox))
+		$('.kill').animate({bottom:'+200px'},200);
+	}
+
+}
+game.init();
+</script>
 </body>
 </html>
