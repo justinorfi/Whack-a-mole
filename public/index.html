@@ -11,48 +11,118 @@
 </header>
 <main>
 	<div id="gameWrapper">
-		<div id="box0" class="game"></div>
-		<div id="box1" class="game"></div>
-		<div id="box2" class="game"></div>
-		<div id="box3" class="game"></div>
-		<div id="box4" class="game"></div>
-		<div id="box5" class="game"></div>
-		<div id="box6" class="game"></div>
-		<div id="box7" class="game"></div>
-		<div id="box8" class="game"></div>
-		<div id="box" class="kill"><img src="/img/joffrey.jpg"/></div>
-		<div id="playGame"></div>
+		<div id="box0" class="game cont"></div>
+		<div id="box1" class="game cont"></div>
+		<div id="box2" class="game cont"></div>
+		<div id="box3" class="game cont"></div>
+		<div id="box4" class="game cont"></div>
+		<div id="box5" class="game cont"></div>
+		<div id="box6" class="game cont"></div>
+		<div id="box7" class="game cont"></div>
+		<div id="box8" class="game cont"><div id="kill" class="game kill"><img src="/img/joffrey.jpg"/></div></div>
+		<div id="playGame"><span class="playText"><h1>Play Game<h1></span></div>
 	</div>
 </main>
 <aside>
+<div id="sidebar">
 	<div id="scoreWrapper">
-		<div id="scoreLine" class="center">Score:<span id="score">*</span></div>
-		<div id="speed"></div>
+		<div id="scoreLine">
+			<ul>
+				<li>Score: <span id="score">0</span></li>
+				<li>Clicks: <span id="clicks">0</span></li>
+				<li>Level: <span id="level">1</span></li>
+			</ul>
+		</div>
 	</div>
+</div>
 </aside>
 <script>
 var game = {
+	box: $('.cont'),									//Cache the cont class for ease
 	score: 0,
-	speed: 1000,
+	level: 1,
+	clicks: 0,
+	speed: 2500,											//This is difficulty, changes depending on score
 
 	init: function(){
-		$('#playGame').hide();
-		game.randomUp();
-		// game.correctClick();
+		$('#playGame').hide();							//Hides the play game buttom
+
+		game.initRandomUp();								//Initiates the random popup animations
+		game.gameLevel();								//Resets the level and difficulty
+		game.correctClick();								//Initiates the click listener
 	},
 
-	randomUp: function(){
+	initRandomUp: function() {									//Loops the random function based on game difficulty
+		setInterval(game.randomUp, game.speed);
+	},
+
+
+	randomUp: function(){									//Random number tells in which div element will slide up
 		var correctBox = Math.floor(Math.random() * (9 - 0)) + 0;
-		game.popUp(correctBox)
+		game.popUp(correctBox);
 	},
 
 	popUp: function(correctBox) {
-		$('.kill').appendTo($('#box' + correctBox))
-		$('.kill').animate({bottom:'+200px'},200);
+		$('.kill')
+			.appendTo($('#box' + correctBox))				//Places element in a div, and slides it up
+			.animate({bottom: '0'},game.speed/4);
+
+			setTimeout(function(){							//Short pause before animation continues
+				$('.kill').animate({bottom: '-200px'},game.speed/4);	
+			}, game.speed/2);		
+	},
+
+	correctClick: function() {
+		game.box.on('click', function() {					//Checks for clicks on all divs. Increments clicks
+			game.clicks++;
+			if ($(this).children().attr('id') == 'kill') {		//If the correct div is clicked, +10 to Stark
+				game.score = game.score + 10;
+			};
+			game.updateScore();								//Updates the score for the user
+		});
+	},
+
+	gameLevel: function() {								//Increases difficulty depending on the user's score
+		if (game.score = 0) {
+			game.level = 1;
+			game.speed = 2500;
+		}
+		if (game.score > 50) {
+			game.level = 2;
+			game.speed = 2200;
+		}
+		if (game.score > 100) {
+			game.level = 3;
+			game.speed = 2000;
+		}
+		if (game.score > 200) {
+			game.level = 4;
+			game.speed = 1800;
+		}
+		if (game.score >= 300) {
+			game.level = 5;
+			game.speed = 1500;
+		}
+		if (game.score >= 500) {
+			game.level = 'Good Luck';
+			game.speed = 1000;
+		}
+		
+	},
+
+	updateScore: function(){							//Shows information to the user
+		$('#score').text(game.score);
+		$('#clicks').text(game.clicks);
+		$('#level').text(game.level);
+		game.gameLevel();								//Asks function to check the score
 	}
 
-}
-game.init();
+
+};
+
+$('#playGame').on('click', function(){
+	game.init();	
+})
 </script>
 </body>
 </html>
